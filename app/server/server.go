@@ -41,7 +41,7 @@ func DBConnection() (*gorm.DB, error) {
 		},
 	)
 
-	// database url
+	// database
 	url := fmt.Sprintf("host=" + os.Getenv("DB_HOST") + " user=" + os.Getenv("DB_USER") + " password=" + os.Getenv("DB_PASSWORD") + " dbname=" + os.Getenv("DB_NAME") + " port=" + os.Getenv("DB_PORT") + " sslmode=disable")
 
 	return gorm.Open(postgres.Open(url), &gorm.Config{Logger: newLogger})
