@@ -1,8 +1,15 @@
 pipeline {
     agent any
 
+
     stages {
-        stage('Build') {
+stage('Checkout') {
+            steps {  
+                git branch: 'main', credentialsId: 'SedkiBani', url: 'git@github.com:https-github-com-Sedkibani/app_laravel.git'
+            }
+        }
+
+        /*stage('Build') {
             steps {
                 sh 'go build'
             }
@@ -16,6 +23,6 @@ pipeline {
             steps {
                 // Ajoutez ici les étapes de déploiement de votre application Go
             }
-        }
+        }*/
     }
 }
