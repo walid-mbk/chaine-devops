@@ -17,6 +17,7 @@ stage('Checkout') {
         stage('Test') {
             steps {
                 sh 'go test ./...'
+                #tt
             }
         }
         stage('Deploy') {
