@@ -1,29 +1,43 @@
 pipeline {
     agent any
-
-
+    
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKER_IMAGE_NAME = 'walidmbarek/golang'
+        GIT_REPO_URL = 'https://github.com/walid-mbk/chaine-devops.git'
+    }
+    
     stages {
-stage('Checkout') {
-            steps {  
-                git branch: 'main', credentialsId: 'Jenkins_GITHUB', url: 'git@github.com:malaksouhaila/projet.git'
+        stage('Clone Repository') {
+            steps {
+                script {
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: "${GIT_REPO_URL}"]]])
+                }
             }
         }
-
-        /*stage('Build') {
+        
+        stage('Build Go Project') {
             steps {
-                sh 'go build'
+                sh 'go build -o myapp'
             }
         }
-        stage('Test') {
+        
+        stage('Build Docker Image') {
             steps {
-                sh 'go test ./...'
-                #tt
+                script {
+                    docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+                }
             }
         }
-        stage('Deploy') {
+        
+        stage('Push to Docker Hub') {
             steps {
-                // Ajoutez ici les étapes de déploiement de votre application Go
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
+                        docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push('latest')
+                    }
+                }
             }
-        }*/
+        }
     }
 }
